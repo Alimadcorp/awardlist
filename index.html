@@ -14,46 +14,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sendup Schedule Calculator</title>
     <link rel="stylesheet" href="style.css" />
-    <meta property="og:title" content="GCU Sendup Schedule Generator" />
+    <meta property="og:title" content="Award List" />
     <meta
       property="og:description"
-      content="Calculates your sendup schedule. A small project by Muhammad Ali."
+      content="Idk what this does. A small project by Muhammad Ali."
     />
     <meta
       property="og:image"
       content="https://img.itch.zone/aW1hZ2UvMjg4NzEyNy8xODY4NTE0NC5wbmc=/original/ZPsh%2Bb.png"
     />
-    <meta property="og:url" content="https://alimadcorp.github.io/sendup" />
+    <meta property="og:url" content="https://alimadcorp.github.io/awardlist" />
     <meta property="og:type" content="website" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   </head>
   <body>
     <div id="rest">
-      <h1>Calculate Your Sendup Schedule</h1>
+      <h1>Award List</h1>
       <div class="input-container">
         <label for="rollNoInput" style="font-size:20px;"
-          >Enter Your Complete Roll Number:</label
+          >Select Category:</label
         >
-        <input id="rollNoInput" placeholder="e.g., 3686-1-24" /><br />
         <div class="radio-group">
           <label class="radio-container"
-            >ICS<input type="radio" name="subject" value="ICS" /><span
+            >Model<input type="radio" name="subject" value="model" /><span
               class="radio-mark"
             ></span
           ></label>
           <label class="radio-container"
-            >PE<input type="radio" name="subject" value="PE" /><span
+            >Poster<input type="radio" name="subject" value="poster" /><span
               class="radio-mark"
             ></span
           ></label>
           <label class="radio-container"
-            >PM<input type="radio" name="subject" value="PM" /><span
+            >Quiz<input type="radio" name="subject" value="quiz" /><span
+              class="radio-mark"
+            ></span
+          ></label>
+          <label class="radio-container"
+            >Debate<input type="radio" name="subject" value="debate" /><span
               class="radio-mark"
             ></span
           ></label>
         </div>
         <br />
-        <div id="more">
+        <!--<div id="more">
         <label class="container" for="ART">ARTS&nbsp
           <input type="checkbox" id="ART" />
           <span class="checkmark"></span></label>
@@ -70,9 +73,9 @@
           >Include Extra Subjects<input type="checkbox" id="extra" /><span
             class="checkmark"
           ></span
-        ></label>
+        ></label>-->
         <br /><br />
-        <button onclick="generateSchedule()" style="padding:10px 20px;"><strong>Get Schedule</strong></button><br /><br />
+        <button onclick="generateSchedule()" style="padding:10px 20px;"><strong>Get List</strong></button><br /><br />
       </div>
       <p id="errorMessage" style="font-weight: bold; color: red;"></p>
     </div>

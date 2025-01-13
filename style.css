@@ -1,6 +1,6 @@
 body {
   font-family: "Lexend Deca", sans-serif;
-  background: linear-gradient(135deg, #040409, #1a1a2e);
+  background: linear-gradient(135deg, #291520, #110813);
   text-align: center;
   margin: 0;
   padding: 0;
@@ -11,11 +11,11 @@ body {
 }
 
 a {
-  color: #77f;
+  color: rgb(119, 255, 137);
 }
 
 h1 {
-  color: #d6e6ff;
+  color: #d6ffdd;
   margin-top: 50px;
   font-size: 5vw;
   animation: fadeIn 2s ease-out;
@@ -23,12 +23,12 @@ h1 {
 
 #time {
   font-size: 3vw;
-  color: #aad4ff;
+  color: #aaffb8;
 }
 
 #log, #logg{
   font-size: 9px;
-  color: #ccccffaa;
+  color: #ccffcfaa;
   text-align: left;
 }
 
@@ -77,14 +77,14 @@ button:hover {
   margin: 20px auto;
   padding: 10px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #0a0f2d, #111733);
+  background: linear-gradient(135deg, #2d0a1f, #2f1133);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: linear-gradient(135deg, #0a0f2d, #111733);
+  background: linear-gradient(135deg, #2d0a21, #271133);
 }
 
 @media (orientation: landscape) {
