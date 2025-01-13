@@ -12,7 +12,7 @@
     <meta name="theme-color" content="#1a1a2e" />
     <meta name="color-scheme" content="dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sendup Schedule Calculator</title>
+    <title>UMT Science Event 2025</title>
     <link rel="stylesheet" href="style.css" />
     <meta property="og:title" content="Award List" />
     <meta
@@ -28,9 +28,9 @@
   </head>
   <body>
     <div id="rest">
-      <h1>Award List</h1>
+      <h1>UMT 2025 Award List</h1>
       <div class="input-container">
-        <label for="rollNoInput" style="font-size:20px;"
+        <label style="font-size:20px;"
           >Select Category:</label
         >
         <div class="radio-group">
@@ -133,17 +133,6 @@ setTimeout(() => {
       localStorage.setItem('lastSubscribeClick', currentTime);
     });
       </script>
-    <details>
-      <summary style="color:#fffc"><strong>Abbreviations</strong></summary>
-      <strong>NB.</strong> - New Block<br />
-      <strong>BJLT</strong> - Bio Junior Lecture Theatre<br />
-      <strong>CNLT</strong> - Chemistry New Lecture Theatre<br />
-      <strong>EE</strong> - Electrical Engineering<br />
-      <strong>PE</strong> - Pre Engineering<br />
-      <strong>PM</strong> - Pre Medical<br />
-      <strong>COM</strong> - Commerce<br />
-      <strong>GS</strong> - General Sciences<br />
-    </details>
     <div class="feedback-container">
         <div id="comments-section">
             <div id="comments-list"></div>
@@ -341,6 +330,27 @@ document.getElementById("sub").addEventListener("click", () => {
   }
 });
 
+document.addEventListener('loadTable', (event) => {
+    fetchTable(event.detail.message);
+});
+function fetchTable(tableName) {
+    let tableArray = []; 
+    console.log("Loading "+tableName);
+  const commentsRef = query(collection(db, tableName), orderBy("rank", "desc"));
+    onSnapshot(commentsRef, (snapshot) => {
+    snapshot.forEach((doc) => {
+      tableArray.push(doc.data()); 
+    });
+    const myNEvent = new CustomEvent('showTable', {
+    detail: { message: tableArray }
+});
+
+
+
+// Trigger the event
+document.dispatchEvent(myNEvent);
+  });
+} 
 document.addEventListener("DOMContentLoaded", () => {fetchVersion(); setInterval(refreshCom, 8000); setInterval(forceRefresh, 61234);}); 
     </script>
     <script src="generate.js"></script>
