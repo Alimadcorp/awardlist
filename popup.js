@@ -1,5 +1,5 @@
 function cleanup() {
-  showPopup("Clean Up", "Enter a range of rows to remove");
+  showPopup("Upload Entry", "Enter Details");
 }
 
 function showPopup(title, description) {

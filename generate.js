@@ -4,42 +4,6 @@ let v = "1.8.9b";
 function setversion(ver) {
   v = ver + "v";
   document.getElementById("logg").innerHTML = "&nbsp&nbsp" + v;
-
-  if (log.style.display != "none") {
-    const inputElement = document.getElementById("rollNoInput");
-    let rollNoInput = inputElement.value;
-    let extras = extra.checked;
-    let rollNo, grade;
-    let logs = "&nbsp&nbsp" + v + "MS";
-    rollNo = extract(rollNoInput).rollNo;
-    grade = extract(rollNoInput).grade;
-    logs = logs + rollNo.toString() + grade.toString();
-    logs += extras ? "Y" : "N";
-    const art = document.getElementById("ART").checked;
-    const com = document.getElementById("COM").checked;
-    const gs = document.getElementById("GS").checked;
-    let selected = document.querySelector('input[name="subject"]:checked');
-    let newadd = "I";
-    if (selected.value != "ICS") {
-      if (selected.value == "PE") {
-        newadd = "E";
-      }
-      if (selected.value == "PM") {
-        newadd = "M";
-      }
-    }
-    if (art) {
-      newadd += "A";
-    }
-    if (com) {
-      newadd += "C";
-    }
-    if (gs) {
-      newadd += "G";
-    }
-    logs += newadd;
-    log.innerHTML = logs;
-  }
 }
 document.addEventListener("DOMContentLoaded", function () {
   fetchCSV(schedule, (data) => {
@@ -59,60 +23,6 @@ document.addEventListener("DOMContentLoaded", function () {
     history.pushState(null, null, location.href);
   });
 });
-
-function download() {
-  const rollNo = document.getElementById("rollNoInput").value || "Schedule";
-  const fileName = `${rollNo}_Schedule.png`;
-  const table = document.getElementById("scheduleTable");
-  const log = document.getElementById("log");
-  const timeElement = document.getElementById("time");
-
-  if (!table || !log || !timeElement || timeElement.innerText.trim() === "") {
-    alert("Please generate the schedule before downloading!");
-    return;
-  }
-
-  const container = document.createElement("div");
-  container.style.position = "absolute";
-  container.style.background = "#040409";
-  container.style.padding = "20px";
-  container.style.top = "0";
-  container.style.left = "0";
-  container.style.width = `${table.offsetWidth}px`;
-
-  container.appendChild(log.cloneNode(true));
-  container.appendChild(table.cloneNode(true));
-  container.appendChild(timeElement.cloneNode(true));
-  document.body.appendChild(container);
-
-  html2canvas(container, {
-    backgroundColor: null,
-    scrollX: 0,
-    scrollY: 0,
-    useCORS: true,
-    scale: 2,
-  }).then((canvas) => {
-    // Generate a Blob from the canvas
-    canvas.toBlob((blob) => {
-      const url = window.URL.createObjectURL(blob); // Create URL from Blob
-      saveFile(fileName, url); // Use the saveFile function
-    }, "image/png");
-
-    document.body.removeChild(container);
-  });
-}
-
-// saveFile function
-function saveFile(fileName, urlFile) {
-  let a = document.createElement("a");
-  a.style = "display: none";
-  document.body.appendChild(a);
-  a.href = urlFile;
-  a.download = fileName;
-  a.click();
-  window.URL.revokeObjectURL(urlFile); // Revoke the created URL
-  a.remove();
-}
 
 function nullCheck() {
   const table = document.getElementById("scheduleTable");
