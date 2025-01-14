@@ -1,11 +1,14 @@
 let initialhtm;
 let generating = false;
 let v = "1.1.1w";
+let load;
 function setversion(ver) {
   v = ver + "v";
   document.getElementById("logg").innerHTML = "&nbsp&nbsp" + v;
 }
 document.addEventListener("DOMContentLoaded", function () {
+  load = document.getElementById("loading");
+  initialHtm = document.getElementById("scheduleTable").innerHTML;
   document.getElementById("logg").innerHTML = "&nbsp&nbsp" + v;
   history.pushState(null, null, location.href);
   window.addEventListener("popstate", () => {
@@ -38,6 +41,7 @@ function back() {
 async function generateSchedule() {
     if (generating) return;
     generating = true;
+  load.style.display = "inline";
     const table = document.getElementById("scheduleTable");
     const other = document.getElementById("rest");
     const bb = document.getElementById("bb");
@@ -62,6 +66,8 @@ document.dispatchEvent(myEvent);
 // Listen for the event
 document.addEventListener('showTable', (event) => {
     console.log('Custom event triggered:', event.detail.message);
+  document.getElementById("scheduleTable").innerHTML = initialHtm;
+  load.style.display = "none";
     let lst = event.detail.message;
     for(let i = 0; i < lst.length; i++){
       let b = lst[i];
