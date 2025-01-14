@@ -65,7 +65,7 @@ document.addEventListener('showTable', (event) => {
     let lst = event.detail.message;
     for(let i = 0; i < lst.length; i++){
       let b = lst[i];
-      addRow([i + 1, b.name, b.class, b.section, b.roll, b.department, b.contact]);
+      addRow([i + 1, b.name, b.class, b.section, b.roll, b.department, "0" + b.contact]);
     }
 });
 function formatDate(inputDate) {

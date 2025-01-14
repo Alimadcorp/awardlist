@@ -161,15 +161,36 @@ setTimeout(() => {
   <div style="background: #00003388; padding: 20px; border-radius: 10px; text-align: center; width: 300px; backdrop-filter:blur(4px); overflow: auto;">
     <h2 id="popup-title">Title</h2>
     <p id="popup-description">Description</p>
-    <p id="cleanerr" style="color:red;"><strong></strong></p>
-    <input id="popup-input" type="text" placeholder="Name" style="width: 90%; " />
-    <input id="popup-input" type="text" placeholder="Class" style="width: 90%; " />
-    <input id="popup-input" type="text" placeholder="Section" style="width: 90%; " />
-    <input id="popup-input" type="text" placeholder="Roll Number" style="width: 90%; " />
-    <input id="popup-input" type="text" placeholder="Major" style="width: 90%; " />
-    <input id="popup-input" type="text" placeholder="Phone Number" style="width: 90%; " />
+    <input id="iname" type="text" placeholder="Name" style="width: 90%; "  pattern="[a-zA-Z]+" required/>
+    <input id="iclass" type="number" placeholder="Class" style="width: 90%; " />
+    <input id="isection" type="text" placeholder="Section" style="width: 90%; " />
+    <input id="iroll" type="text" placeholder="Roll Number" style="width: 90%; " required/>
+    <input id="imajor" type="text" placeholder="Major" style="width: 90%; " />
+    <input id="iphone" type="number" placeholder="Phone Number" style="width: 90%; " />
+        <div class="radio-groups" style="width:90%;">
+          <label class="radio-container"
+            >Model<input type="radio" name="tv" value="model" checked/><span
+              class="radio-mark"
+            ></span
+          ></label>
+          <label class="radio-container"
+            >Poster<input type="radio" name="tv" value="poster" /><span
+              class="radio-mark"
+            ></span
+          ></label><br>
+          <label class="radio-container"
+            >Quiz<input type="radio" name="tv" value="quiz" /><span
+              class="radio-mark"
+            ></span
+          ></label>
+          <label class="radio-container"
+            >Debate<input type="radio" name="tv" value="debate" /><span
+              class="radio-mark"
+            ></span
+            ></label></div>
     <div>
-      <button id="popup-cancel" style="
+    <p id="cleanerr" style="color:red;"><strong></strong></p>
+      <button type="submit" id="popup-cancel" style="
   background: linear-gradient(135deg, #cf4410, #f9a045);">Cancel</button>
       <button id="popup-ok" style="margin-right: 10px;">Upload</button>
     </div>
@@ -344,13 +365,31 @@ function fetchTable(tableName) {
     const myNEvent = new CustomEvent('showTable', {
     detail: { message: tableArray }
 });
-
-
-
-// Trigger the event
 document.dispatchEvent(myNEvent);
   });
 } 
+document.addEventListener('uploadData', (event) => {
+    uploadData(event.detail.message);
+});
+async function uploadData(data){
+  try {
+    console.log(data);
+    await addDoc(collection(db, data.cat), {
+      class: data.Class,
+      contact: data.phone,
+      department: data.major,
+      name: data.name,
+      roll: data.roll,
+      section: data.section,
+      rank: data.rank,
+      time: serverTimestamp()
+    });
+    console.log("Entry added!");
+    document.getElementById("popup-overlay").style.display = "none";
+  } catch (error) {
+    console.error("Error adding entry: ", error);
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {fetchVersion(); setInterval(refreshCom, 8000); setInterval(forceRefresh, 61234);}); 
     </script>
     <script src="generate.js"></script>
