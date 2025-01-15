@@ -231,7 +231,7 @@ const commentsList = document.getElementById("comments-list");
 let commentsArray = [];
 async function addComment(commentText) {
   try {
-    await addDoc(collection(db, "sendup"), {
+    await addDoc(collection(db, appname), {
       text: commentText,
       timestamp: serverTimestamp()
     });
