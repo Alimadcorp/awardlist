@@ -1,460 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" href="icon.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
+      <meta charset="UTF-8" />
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="color-scheme" content="dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meme of the Day by Alimad Co</title>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-      import {
-        getFirestore,
-        collection,
-        doc,
-        query,
-        orderBy,
-        onSnapshot,
-        addDoc,
-        updateDoc,
-        serverTimestamp,
-      } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyBR1UeKEAJV4x3YOjzMFDsaSUwQiLgJNFQ",
-        authDomain: "commentspagetests.firebaseapp.com",
-        projectId: "commentspagetests",
-        storageBucket: "commentspagetests.firebasestorage.app",
-        messagingSenderId: "560501874254",
-        appId: "1:560501874254:web:2cab2358cb517c3418ad1f",
-        measurementId: "G-HYDSZ89BLH",
-      };
-
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      const appname = "meme";
-      const feedbackForm = document.getElementById("feedbackForm");
-      const commentTextarea = document.getElementById("comment");
-      const commentsList = document.getElementById("comments-list");
-      let commentsArray = [];
-      async function addComment(commentText) {
-        try {
-          await addDoc(collection(db, appname), {
-            text: commentText,
-            timestamp: serverTimestamp(),
-          });
-        } catch (error) {
-          console.error("Error adding comment: ", error);
-        }
-      }
-      function fetchComments() {
-        const commentsRef = query(collection(db, appname), orderBy("timestamp"));
-        onSnapshot(commentsRef, (snapshot) => {
-          commentsArray = [];
-          snapshot.forEach((doc) => {
-            const commentData = doc.data();
-            commentData.id = doc.id;
-            commentsArray.push(commentData);
-          });
-          displayCommentsWithDelay(true);
-        });
-      }
-      function formatTimeAgo(timestamp) {
-        const now = new Date();
-
-        const diffInSeconds = Math.floor((now - timestamp) / 1000);
-        if (diffInSeconds < 60) {
-          return diffInSeconds <= 0
-            ? "Just now"
-            : `${diffInSeconds} second${diffInSeconds === 1 ? "" : "s"} ago`;
-        }
-        const diffInMinutes = Math.floor(diffInSeconds / 60);
-        if (diffInMinutes < 60) {
-          return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
-        }
-        const diffInHours = Math.floor(diffInMinutes / 60);
-        if (diffInHours < 24) {
-          return `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`;
-        }
-        const diffInDays = Math.floor(diffInHours / 24);
-        if (diffInDays <= 14) {
-          return `${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
-        }
-        return timestamp.toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        });
-      }
-
-      function refreshCom() {
-        let newArray = [];
-        const commentsRef = query(collection(db, appname), orderBy("timestamp"));
-        onSnapshot(commentsRef, (snapshot) => {
-          snapshot.forEach((doc) => {
-            const commentData = doc.data();
-            commentData.id = doc.id;
-            newArray.push(commentData);
-          });
-          if (JSON.stringify(newArray) !== JSON.stringify(commentsArray)) {
-            commentsArray = newArray;
-            displayCommentsWithDelay(false);
-          }
-        });
-      }
-      function forceRefresh() {
-        let newArray = [];
-        const commentsRef = query(collection(db, appname), orderBy("timestamp"));
-        onSnapshot(commentsRef, (snapshot) => {
-          snapshot.forEach((doc) => {
-            const commentData = doc.data();
-            commentData.id = doc.id;
-            newArray.push(commentData);
-          });
-          commentsArray = newArray;
-          displayCommentsWithDelay(false);
-        });
-      }
-      function scrollToBottom() {
-        const commentsContainer = document.getElementById("comments-section");
-        commentsContainer.scrollTop = commentsContainer.scrollHeight;
-      }
-      let adding = false;
-      async function displayCommentsWithDelay(scrolll) {
-        if (adding) return;
-        adding = true;
-        commentsList.innerHTML = "";
-        for (const comment of commentsArray) {
-          if (scrolll) {
-            await new Promise((resolve) => setTimeout(resolve, 10));
-          } // 50ms delay
-          const timestamp = comment.timestamp
-            ? comment.timestamp.toDate()
-            : new Date();
-          const timeAgo = formatTimeAgo(timestamp);
-          const commentElement = document.createElement("div");
-          commentElement.classList.add("comment");
-          commentElement.innerHTML = `
-            <p>${comment.text}</p>
-            <div class="comment-time">${timeAgo}</div>
-          `;
-          commentsList.appendChild(commentElement);
-        }
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        if (scrolll) scrollToBottom();
-        adding = false;
-      }
-
-      document.getElementById("sub").addEventListener("click", () => {
-        const commentText = commentTextarea.value;
-        if (commentText) {
-          addComment(commentText);
-          commentTextarea.value = "";
-        }
-      });
-      document.addEventListener("DOMContentLoaded", () => {
-        fetchComments();
-        setInterval(refreshCom, 8000);
-        setInterval(forceRefresh, 61234);
-      });
-
-      function fetchMeme() {
-        const commentsRef = query(collection(db, "memeoftheday"));
-        onSnapshot(commentsRef, (snapshot) => {
-          snapshot.forEach((doc) => {
-            const today = new Date().toISOString().split("T")[0];
-            let data = doc.data();
-            if(data.memeby != "Unknown"){
-              document.getElementById("memeby").innerHTML = "Meme updated by " + data.memeby;
-            }else{
-              document.getElementById("memeby").innerHTML = "Loading...";
-            }
-            if (today == data.day) {
-              displayMeme(data);
-            } else {
-              loadNewMeme();
-            }
-          });
-        });
-      }
-      async function uploadMeme(data) {
-        try {
-          const docRef = doc(db, "memeoftheday", "today");
-
-          const filteredData = {
-            title: data.title || "No Title",
-            preview: data.preview || ["No Preview"],
-            subreddit: data.subreddit || "No Subreddit",
-            postLink: data.postLink || "No Link",
-            day: data.day || new Date().toISOString().split("T")[0],
-            author: data.author || "Unknown Author",
-            url: data.url || "No URL",
-            memeby: "Unknown",
-            time: serverTimestamp(),
-          };
-
-          await updateDoc(docRef, filteredData);
-        } catch (error) {
-          console.error("Error updating entry: ", error);
-        }
-      }
-
-
-      function hideLoader() {
-        document.getElementById("loading-indicator").style.display = "none";
-      }
-
-      function loadNewMeme() {
-        const mainImg = document.getElementById("imag");
-        const previewImg = document.getElementById("preview");
-        mainImg.style.display = previewImg.style.display = "none";
-        document.getElementById("loading-indicator").style.display = "inline";
-        fetch("https://meme-api.com/gimme")
-          .then((res) => res.json())
-          .then((data) => {
-            displayMeme(data);
-            uploadMeme(data);
-          })
-          .catch((err) => {
-            console.error(err);
-            document.getElementById("title").innerHTML = "Failed to load meme.";
-            hideLoader();
-          });
-      }
-
-      function displayMeme(data) {
-        hideLoader();
-        const mainImg = document.getElementById("imag");
-        const previewImg = document.getElementById("preview");
-        previewImg.style.display = "inline";
-        previewImg.src = data.preview[1];
-        mainImg.src = data.url;
-
-        previewImg.onload = () => {
-          previewImg.classList.remove("hidden");
-          previewImg.style.display = "inline";
-        };
-
-        mainImg.onload = () => {
-          previewImg.classList.add("hidden");
-          mainImg.classList.remove("hidden");
-          previewImg.style.display = "none";
-          mainImg.style.display = "inline";
-          hideLoader();
-        };
-
-        document.getElementById("title").innerHTML = data.title;
-        document.getElementById("author").innerHTML = "Author: " + data.author;
-        document.getElementById("subreddit").innerHTML =
-          "Subreddit: r/" + data.subreddit;
-        document.getElementById("link").innerHTML = "View Post";
-        document.getElementById("link").href = data.postLink;
-      }
-      window.onload = fetchMeme;
-    </script>
-    <style>
-          body {
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-          }
-
-          h1 {
-            margin: 20px 0;
-            color: #bb86fc;
-          }
-
-          img {
-            max-width: 90%;
-            height: auto;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            margin: 20px 0;
-          }
-
-          img.hidden {
-            display: none;
-          }
-
-          a {
-            color: #bb86fc;
-            text-decoration: none;
-          }
-
-          a:hover {
-            text-decoration: underline;
-          }
-
-          button {
-            background-color: #bb86fc;
-            color: #121212;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-          }
-
-          button:hover {
-            background-color: #3700b3;
-          }
-
-          #loading-indicator {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-          }
-
-          #loading-indicator span {
-            color: #bb86fc;
-            font-size: 24px;
-            margin-right: 10px;
-          }
-
-          #loading-indicator .spinner {
-            border: 4px solid #121212;
-            border-top: 4px solid #bb86fc;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-          }
-          .feedback-container {
-          position: static; /* Let it flow with the page */
-          margin-top: 1.5rem; /* Space between buttons and comments */
-          background-color: rgba(255, 255, 255, 0.05);
-          padding: 1rem;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          bottom: 1rem;
-          left: 1rem;
-          right: 1rem;
-          overflow-x: hidden;
-          overflow-y: auto;
-          z-index: 9999;
-          max-height: 90%;
-        }
-
-      textarea {
-        font-size: 1rem;
-      }
-        #sub {
-          margin: 1rem 0; /* Adjust spacing */
-        }
-
-      .feedback-container h1,
-      .feedback-container h2 {
-        color: #eee;
-        text-align: center;
-        font-size: 1rem; /* Increased size for readability */
-      }
-
-      textarea {
-        height: 5rem; /* Adjusted height */
-        padding: 1rem;
-        border-radius: 5px;
-        resize: none;
-        width: 90%;
-      }
-
-      .feedback-container button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1rem;
-        margin-top: 1rem;
-        width: 80%;
-      }
-
-      #comments-section {
-        margin-top: 1.5rem;
-        max-height: 50vh;
-        overflow-y: auto;
-      }
-
-      .comment-time {
-        font-size: 11px;
-        color: #888;
-      }
-      .comment {
-        position: relative;
-        overflow: auto;
-        background-color: #4446;
-        padding: 0.1rem;
-        border-radius: 5px;
-        margin-bottom: 0.1rem;
-        border: 1px solid #888;
-      }
-      #sub {
-        margin: 0.5rem auto; /* Center horizontally */
-        display: block; /* Make it a block element */
-        box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-        font-size: 13px;
-        width: 80%; /* Adjust width as needed */
-        color: #fff;
-        background-color: #0a0a;
-        padding: 6px;
-        cursor: pointer;
-      }
-      .comment p {
-        margin: 0;
-        font-size: 13px;
-      }
-
-          @keyframes spin {
-            from {
-              transform: rotate(0deg);
-            }
-            to {
-              transform: rotate(360deg);
-            }
-          }
-    </style>
+    <title>UMT Science Event 2025</title>
+    <link rel="stylesheet" href="style.css" />
+    <meta property="og:title" content="Award List" />
+    <meta
+      property="og:description"
+      content="Idk what this does. A small project by Muhammad Ali."
+    />
+    <meta
+      property="og:image"
+      content="https://img.itch.zone/aW1hZ2UvMjg4NzEyNy8xODY4NTE0NC5wbmc=/original/ZPsh%2Bb.png"
+    />
+    <meta property="og:url" content="https://alimadcorp.github.io/awardlist" />
+    <meta property="og:type" content="website" />
   </head>
   <body>
-    <div id="loading-indicator">
-      <span><h6 id="memeby">Loading...</h6></span>
-      <div class="spinner"></div>
-      <br />
-    </div>
-
-    <h1>Meme of the Day by Alimad</h1>
-    <img src="#" id="preview" alt="Preview" class="hidden" />
-    <img src="#" id="imag" alt="Meme of the day" class="hidden" />
-    <h2 id="title">Loading...</h2>
-    <h3 id="author"></h3>
-    <h3 id="subreddit"></h3>
-    <a href="#" id="link" target="_blank"></a><br /><br />
-
-    <div class="feedback-container">
-      <div id="comments-section">
-        <div id="comments-list"></div>
+    <div id="rest">
+      <h1>UMT 2025 Award List</h1>
+      <div class="input-container">
+        <label style="font-size:20px;"
+          >Select Category:</label
+        >
+        <div class="radio-group">
+          <label class="radio-container"
+            >Model<input type="radio" name="subject" value="model" /><span
+              class="radio-mark"
+            ></span
+          ></label>
+          <label class="radio-container"
+            >Poster<input type="radio" name="subject" value="poster" /><span
+              class="radio-mark"
+            ></span
+          ></label>
+          <label class="radio-container"
+            >Quiz<input type="radio" name="subject" value="quiz" /><span
+              class="radio-mark"
+            ></span
+          ></label>
+          <label class="radio-container"
+            >Debate<input type="radio" name="subject" value="debate" /><span
+              class="radio-mark"
+            ></span
+          ></label>
+        </div>
+        <br />
+        <!--<div id="more">
+        <label class="container" for="ART">ARTS&nbsp
+          <input type="checkbox" id="ART" />
+          <span class="checkmark"></span></label>
+        <label class="container" for="COM">COM&nbsp
+          <input type="checkbox" id="COM" />
+          <span class="checkmark"></span></label>
+        <label class="container" for="GS">GS&nbsp
+          <input type="checkbox" id="GS" />
+          <span class="checkmark"></span></label>
+        <br />
+        </div>
+        <br />
+        <label class="container" for="extra"
+          >Include Extra Subjects<input type="checkbox" id="extra" /><span
+            class="checkmark"
+          ></span
+        ></label>-->
+        <br /><br />
+        <button onclick="generateSchedule()" style="padding:10px 20px;"><strong>Get List</strong></button><br><br>
+        <button onclick="cleanup()" id="clean" style="padding: 10px 20px;">Upload Entry</button><br /><br />
       </div>
-      <h1>Leave a Comment</h1>
-      <form id="feedbackForm">
-        <textarea
-          id="comment"
-          placeholder="Write your comment here..."
-          required
-        ></textarea>
-      </form>
-      <button id="sub">Submit</button>
+      <p id="errorMessage" style="font-weight: bold; color: red;"></p>
+    </div>
+    <table id="scheduleTable" style="display: none;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Class</th>
+          <th>Section</th>
+          <th>Roll No.</th>
+          <th>Major</th>
+          <th>&#128222;</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="loading" style="display:none;"><h3>Loading...</h3><br></div>
+    <p id="log" style="display:none;"></p>
+    <center><p id="logg"></p></center>
+    <p id="time"></p>
+    <button onclick="back()" id="bb" style="display: none; background: linear-gradient(135deg, #cf4410, #f9a045);">Back</button>
+      <button id="subscribeBtn">YouTube Channel</button>
+  <p id="status"></p>
+
+
+
+      <script>
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    const statusText = document.getElementById('status');
+    document.addEventListener('DOMContentLoaded', () => {if(localStorage.getItem("subbed") == "Y") {subscribeBtn.style.display="none";statusText.style.display="none";} });
+    subscribeBtn.addEventListener('click', () => {
+      const lastClick = localStorage.getItem('lastSubscribeClick');
+      window.open('https://www.youtube.com/@alimadco', '_blank');
+      const currentTime = Date.now(); // Current timestamp in milliseconds
+subscribeBtn.disabled = true;
+setTimeout(() => {
+  subscribeBtn.disabled = false;
+}, 6000);
+      if (lastClick) {
+        const timeSinceLastClick = (currentTime - lastClick) / 1000; // Convert to seconds
+
+        if (timeSinceLastClick >= 6) {
+          statusText.textContent = "Thank you for subscribing!";
+          localStorage.setItem("subbed", "Y");
+          // Mark user as subscribed (e.g., save to database or show confirmation)
+        } else {
+          statusText.textContent = `Please wait ${(6 - timeSinceLastClick).toFixed(1)} more seconds.`;
+        }
+      } else {
+        statusText.textContent = "Please click again after 6 seconds to confirm subscription.";
+      }
+
+      // Update the last click time
+      localStorage.setItem('lastSubscribeClick', currentTime);
+    });
+      </script>
+    <div class="feedback-container">
+        <div id="comments-section">
+            <div id="comments-list"></div>
+        </div><h1>Leave a Comment</h1>
+        <form id="feedbackForm">
+            <textarea id="comment" placeholder="Write your comment here..." required></textarea>
+        </form>
+          <button id="sub">Submit</button>
     </div>
     <p class="footer">
       Made by<a href="https://alimadcorp.github.io/site/social.html"
         ><strong>&nbspMuhammad Ali</strong></a
+      >. In case of any errors, please
+      <a href="https://github.com/Alimadcorp/sendup/issues/new"
+        ><strong>report</strong></a
       >.
     </p>
+    <p style="font-size:9px">
+      All data is taken from official
+      <a
+        href="https://gcu.edu.pk/Events/Updates/Gazzette-Inter-Part-IandII-SendUpTest-2024.pdf"
+        >GCU website</a
+      >.
+    </p>
+    <div id="popup-overlay" style="overflow: auto; display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+  <div style="background: #00003388; padding: 20px; border-radius: 10px; text-align: center; width: 300px; backdrop-filter:blur(4px); overflow: auto;">
+    <h2 id="popup-title">Title</h2>
+    <p id="popup-description">Description</p>
+    <input id="iname" type="text" placeholder="Name" style="width: 90%; "  pattern="[a-zA-Z]+" required/>
+    <input id="iclass" type="number" placeholder="Class" style="width: 90%; " />
+    <input id="isection" type="text" placeholder="Section" style="width: 90%; " />
+    <input id="iroll" type="text" placeholder="Roll Number" style="width: 90%; " required/>
+    <input id="imajor" type="text" placeholder="Major" style="width: 90%; " />
+    <input id="iphone" type="number" placeholder="Phone Number" style="width: 90%; " />
+        <div class="radio-groups" style="width:90%;">
+          <label class="radio-container"
+            >Model<input type="radio" name="tv" value="model" checked/><span
+              class="radio-mark"
+            ></span
+          ></label>
+          <label class="radio-container"
+            >Poster<input type="radio" name="tv" value="poster" /><span
+              class="radio-mark"
+            ></span
+          ></label><br>
+          <label class="radio-container"
+            >Quiz<input type="radio" name="tv" value="quiz" /><span
+              class="radio-mark"
+            ></span
+          ></label>
+          <label class="radio-container"
+            >Debate<input type="radio" name="tv" value="debate" /><span
+              class="radio-mark"
+            ></span
+            ></label></div>
+    <div>
+    <p id="cleanerr" style="color:red;"><strong></strong></p>
+      <button type="submit" id="popup-cancel" style="
+  background: linear-gradient(135deg, #cf4410, #f9a045);">Cancel</button>
+      <button id="popup-ok" style="margin-right: 10px;">Upload</button>
+    </div>
+  </div>
+</div>
+    <script src="fetch.js"></script>
+    <script src="script.js"></script>
+    <script src="popup.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  addDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBR1UeKEAJV4x3YOjzMFDsaSUwQiLgJNFQ",
+  authDomain: "commentspagetests.firebaseapp.com",
+  projectId: "commentspagetests",
+  storageBucket: "commentspagetests.firebasestorage.app",
+  messagingSenderId: "560501874254",
+  appId: "1:560501874254:web:2cab2358cb517c3418ad1f",
+  measurementId: "G-HYDSZ89BLH",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const appname = "awardlist";
+const feedbackForm = document.getElementById("feedbackForm");
+const commentTextarea = document.getElementById("comment");
+const commentsList = document.getElementById("comments-list");
+let commentsArray = [];
+async function addComment(commentText) {
+  try {
+    await addDoc(collection(db, appname), {
+      text: commentText,
+      timestamp: serverTimestamp()
+    });
+    console.log("Comment added!");
+  } catch (error) {
+    console.error("Error adding comment: ", error);
+  }
+}
+function fetchVersion(){
+  const versionCheck = query(collection(db, "version"));
+  onSnapshot(versionCheck, (snapshot) => {
+    snapshot.forEach((doc) => {
+      let name = doc.data();
+      let version = doc.id;
+      if(version == appname){ setversion(name.version);}
+    });
+  });
+}
+function fetchComments() {
+  const commentsRef = query(collection(db, appname), orderBy("timestamp"));
+  onSnapshot(commentsRef, (snapshot) => {
+    commentsArray = []; 
+    snapshot.forEach((doc) => {
+      const commentData = doc.data();
+      commentData.id = doc.id;
+      commentsArray.push(commentData); 
+    });
+    displayCommentsWithDelay(true);
+  });
+} 
+function formatTimeAgo(timestamp) {
+  const now = new Date();
+  
+const diffInSeconds = Math.floor((now - timestamp) / 1000);
+if (diffInSeconds < 60) {
+  return diffInSeconds <= 0 ? "Just now" : `${diffInSeconds} second${diffInSeconds === 1 ? "" : "s"} ago`;
+}
+const diffInMinutes = Math.floor(diffInSeconds / 60);
+if (diffInMinutes < 60) {
+  return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
+}
+const diffInHours = Math.floor(diffInMinutes / 60);
+if (diffInHours < 24) {
+  return `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`;
+}
+const diffInDays = Math.floor(diffInHours / 24);
+if (diffInDays <= 14) {
+  return `${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
+} 
+  return timestamp.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function refreshCom(){
+  let newArray = [];
+  const commentsRef = query(collection(db, appname), orderBy("timestamp"));
+  onSnapshot(commentsRef, (snapshot) => {
+    snapshot.forEach((doc) => {
+      const commentData = doc.data();
+      commentData.id = doc.id;
+      newArray.push(commentData); 
+    });
+    if (JSON.stringify(newArray) !== JSON.stringify(commentsArray)) {
+  commentsArray = newArray;
+  displayCommentsWithDelay(false);
+    }
+  });
+} 
+function forceRefresh(){
+  let newArray = [];
+  const commentsRef = query(collection(db, appname), orderBy("timestamp"));
+  onSnapshot(commentsRef, (snapshot) => {
+    snapshot.forEach((doc) => {
+      const commentData = doc.data();
+      commentData.id = doc.id;
+      newArray.push(commentData); 
+    });
+      commentsArray = newArray;
+      displayCommentsWithDelay(false);
+  });
+} 
+function scrollToBottom() {
+  const commentsContainer = document.getElementById("comments-section");
+  commentsContainer.scrollTop = commentsContainer.scrollHeight;
+}
+let adding = false;
+async function displayCommentsWithDelay(scrolll) {
+  if(adding) return;
+  adding = true;
+  commentsList.innerHTML = "";
+  for (const comment of commentsArray) {
+    if(scrolll) { await new Promise((resolve) => setTimeout(resolve, 10));} // 50ms delay
+    const timestamp = comment.timestamp
+      ? comment.timestamp.toDate()
+      : new Date();
+    const timeAgo = formatTimeAgo(timestamp);
+    const commentElement = document.createElement("div");
+    commentElement.classList.add("comment");
+    commentElement.innerHTML = `
+      <p>${comment.text}</p>
+      <div class="comment-time">${timeAgo}</div>
+    `;
+    commentsList.appendChild(commentElement);
+  }
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  if(scrolll) scrollToBottom();
+  adding = false;
+}
+
+document.getElementById("sub").addEventListener("click", () => {
+  const commentText = commentTextarea.value;
+  if (commentText) {
+    addComment(commentText);
+    commentTextarea.value = "";
+  }
+});
+
+document.addEventListener('loadTable', (event) => {
+    fetchTable(event.detail.message);
+});
+function fetchTable(tableName) {
+    
+    let tableArray = []; 
+    console.log("Loading "+tableName);
+  const commentsRef = query(collection(db, tableName), orderBy("rank", "desc"));
+    onSnapshot(commentsRef, (snapshot) => {
+    snapshot.forEach((doc) => {
+      tableArray.push(doc.data()); 
+    });
+    const myNEvent = new CustomEvent('showTable', {
+    detail: { message: tableArray }
+});
+document.dispatchEvent(myNEvent);
+  });
+} 
+document.addEventListener('uploadData', (event) => {
+    uploadData(event.detail.message);
+});
+async function uploadData(data){
+  try {
+    console.log(data);
+    await addDoc(collection(db, data.cat), {
+      class: data.Class,
+      contact: data.phone,
+      department: data.major,
+      name: data.name,
+      roll: data.roll,
+      section: data.section,
+      rank: data.rank,
+      time: serverTimestamp()
+    });
+    console.log("Entry added!");
+    document.getElementById("popup-overlay").style.display = "none";
+  } catch (error) {
+    console.error("Error adding entry: ", error);
+  }
+}
+document.addEventListener("DOMContentLoaded", () => {fetchVersion(); setInterval(refreshCom, 8000); setInterval(forceRefresh, 61234);}); 
+    </script>
+    <script src="generate.js"></script>
   </body>
 </html>
