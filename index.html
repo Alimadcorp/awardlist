@@ -283,71 +283,71 @@
         measurementId: "G-HYDSZ89BLH",
       };
 
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      const appname = "awardlist";
-      const feedbackForm = document.getElementById("feedbackForm");
-      const commentTextarea = document.getElementById("comment");
-      const commentsList = document.getElementById("comments-list");
-      let commentsArray = [];
-      async function addComment(commentText) {
-        try {
-          await addDoc(collection(db, "sendup"), {
-            text: commentText,
-            timestamp: serverTimestamp()
-          });
-          console.log("Comment added!");
-        } catch (error) {
-          console.error("Error adding comment: ", error);
-        }
-      }
-      function fetchVersion(){
-        const versionCheck = query(collection(db, "version"));
-        onSnapshot(versionCheck, (snapshot) => {
-          snapshot.forEach((doc) => {
-            let name = doc.data();
-            let version = doc.id;
-            if(version == appname){ setversion(name.version);}
-          });
-        });
-      }
-      function fetchComments() {
-        const commentsRef = query(collection(db, appname), orderBy("timestamp"));
-        onSnapshot(commentsRef, (snapshot) => {
-          commentsArray = [];
-          snapshot.forEach((doc) => {
-            const commentData = doc.data();
-            commentData.id = doc.id;
-            commentsArray.push(commentData);
-          });
-          displayCommentsWithDelay(true);
-        });
-      }
-      function formatTimeAgo(timestamp) {
-        const now = new Date();
-
-      const diffInSeconds = Math.floor((now - timestamp) / 1000);
-      if (diffInSeconds < 60) {
-        return diffInSeconds <= 0 ? "Just now" : `${diffInSeconds} second${diffInSeconds === 1 ? "" : "s"} ago`;
-      }
-      const diffInMinutes = Math.floor(diffInSeconds / 60);
-      if (diffInMinutes < 60) {
-        return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
-      }
-      const diffInHours = Math.floor(diffInMinutes / 60);
-      if (diffInHours < 24) {
-        return `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`;
-      }
-      const diffInDays = Math.floor(diffInHours / 24);
-      if (diffInDays <= 14) {
-        return `${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
-      }
-        return timestamp.toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        });
-      }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const appname = "awardlist";
+const feedbackForm = document.getElementById("feedbackForm");
+const commentTextarea = document.getElementById("comment");
+const commentsList = document.getElementById("comments-list");
+let commentsArray = [];
+async function addComment(commentText) {
+  try {
+    await addDoc(collection(db, appname), {
+      text: commentText,
+      timestamp: serverTimestamp()
+    });
+    console.log("Comment added!");
+  } catch (error) {
+    console.error("Error adding comment: ", error);
+  }
+}
+function fetchVersion(){
+  const versionCheck = query(collection(db, "version"));
+  onSnapshot(versionCheck, (snapshot) => {
+    snapshot.forEach((doc) => {
+      let name = doc.data();
+      let version = doc.id;
+      if(version == appname){ setversion(name.version);}
+    });
+  });
+}
+function fetchComments() {
+  const commentsRef = query(collection(db, appname), orderBy("timestamp"));
+  onSnapshot(commentsRef, (snapshot) => {
+    commentsArray = []; 
+    snapshot.forEach((doc) => {
+      const commentData = doc.data();
+      commentData.id = doc.id;
+      commentsArray.push(commentData); 
+    });
+    displayCommentsWithDelay(true);
+  });
+} 
+function formatTimeAgo(timestamp) {
+  const now = new Date();
+  
+const diffInSeconds = Math.floor((now - timestamp) / 1000);
+if (diffInSeconds < 60) {
+  return diffInSeconds <= 0 ? "Just now" : `${diffInSeconds} second${diffInSeconds === 1 ? "" : "s"} ago`;
+}
+const diffInMinutes = Math.floor(diffInSeconds / 60);
+if (diffInMinutes < 60) {
+  return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
+}
+const diffInHours = Math.floor(diffInMinutes / 60);
+if (diffInHours < 24) {
+  return `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`;
+}
+const diffInDays = Math.floor(diffInHours / 24);
+if (diffInDays <= 14) {
+  return `${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
+} 
+  return timestamp.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
 
       function refreshCom(){
         let newArray = [];
