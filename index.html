@@ -8,7 +8,7 @@
       href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
       rel="stylesheet"
     />
-      <meta charset="UTF-8" />
+    <meta charset="UTF-8" />
     <meta name="theme-color" content="#1a1a2e" />
     <meta name="color-scheme" content="dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -30,10 +30,8 @@
     <div id="rest">
       <h1>UMT 2025 Award List</h1>
       <div class="input-container">
-        <label style="font-size:20px;"
-          >Select Category:</label
-        >
-        <div class="radio-group">
+        <label style="font-size:20px;">Select Category:</label>
+        <div class="radio-groups">
           <label class="radio-container"
             >Model<input type="radio" name="subject" value="model" /><span
               class="radio-mark"
@@ -75,8 +73,12 @@
           ></span
         ></label>-->
         <br /><br />
-        <button onclick="generateSchedule()" style="padding:10px 20px;"><strong>Get List</strong></button><br><br>
-        <button onclick="cleanup()" id="clean" style="padding: 10px 20px;">Upload Entry</button><br /><br />
+        <button onclick="generateSchedule()" style="padding:10px 20px;">
+          <strong>Get List</strong></button
+        ><br /><br />
+        <button onclick="cleanup()" id="clean" style="padding: 10px 20px;">
+          Upload Entry</button
+        ><br /><br />
       </div>
       <p id="errorMessage" style="font-weight: bold; color: red;"></p>
     </div>
@@ -94,54 +96,66 @@
       </thead>
       <tbody></tbody>
     </table>
-    <div id="loading" style="display:none;"><h3>Loading...</h3><br></div>
+    <div id="loading" style="display:none;">
+      <h3>Loading...</h3>
+      <br />
+    </div>
     <p id="log" style="display:none;"></p>
     <center><p id="logg"></p></center>
     <p id="time"></p>
-    <button onclick="back()" id="bb" style="display: none; background: linear-gradient(135deg, #cf4410, #f9a045);">Back</button>
-      <button id="subscribeBtn">YouTube Channel</button>
-  <p id="status"></p>
+    <button
+      onclick="back()"
+      id="bb"
+      style="display: none; background: linear-gradient(135deg, #cf4410, #f9a045);"
+    >
+      Back
+    </button>
+    <button id="subscribeBtn">YouTube Channel</button>
+    <p id="status"></p>
 
+    <script>
+          const subscribeBtn = document.getElementById('subscribeBtn');
+          const statusText = document.getElementById('status');
+          document.addEventListener('DOMContentLoaded', () => {if(localStorage.getItem("subbed") == "Y") {subscribeBtn.style.display="none";statusText.style.display="none";} });
+          subscribeBtn.addEventListener('click', () => {
+            const lastClick = localStorage.getItem('lastSubscribeClick');
+            window.open('https://www.youtube.com/@alimadco', '_blank');
+            const currentTime = Date.now(); // Current timestamp in milliseconds
+      subscribeBtn.disabled = true;
+      setTimeout(() => {
+        subscribeBtn.disabled = false;
+      }, 6000);
+            if (lastClick) {
+              const timeSinceLastClick = (currentTime - lastClick) / 1000; // Convert to seconds
 
+              if (timeSinceLastClick >= 6) {
+                statusText.textContent = "Thank you for subscribing!";
+                localStorage.setItem("subbed", "Y");
+                // Mark user as subscribed (e.g., save to database or show confirmation)
+              } else {
+                statusText.textContent = `Please wait ${(6 - timeSinceLastClick).toFixed(1)} more seconds.`;
+              }
+            } else {
+              statusText.textContent = "Please click again after 6 seconds to confirm subscription.";
+            }
 
-      <script>
-    const subscribeBtn = document.getElementById('subscribeBtn');
-    const statusText = document.getElementById('status');
-    document.addEventListener('DOMContentLoaded', () => {if(localStorage.getItem("subbed") == "Y") {subscribeBtn.style.display="none";statusText.style.display="none";} });
-    subscribeBtn.addEventListener('click', () => {
-      const lastClick = localStorage.getItem('lastSubscribeClick');
-      window.open('https://www.youtube.com/@alimadco', '_blank');
-      const currentTime = Date.now(); // Current timestamp in milliseconds
-subscribeBtn.disabled = true;
-setTimeout(() => {
-  subscribeBtn.disabled = false;
-}, 6000);
-      if (lastClick) {
-        const timeSinceLastClick = (currentTime - lastClick) / 1000; // Convert to seconds
-
-        if (timeSinceLastClick >= 6) {
-          statusText.textContent = "Thank you for subscribing!";
-          localStorage.setItem("subbed", "Y");
-          // Mark user as subscribed (e.g., save to database or show confirmation)
-        } else {
-          statusText.textContent = `Please wait ${(6 - timeSinceLastClick).toFixed(1)} more seconds.`;
-        }
-      } else {
-        statusText.textContent = "Please click again after 6 seconds to confirm subscription.";
-      }
-
-      // Update the last click time
-      localStorage.setItem('lastSubscribeClick', currentTime);
-    });
-      </script>
+            // Update the last click time
+            localStorage.setItem('lastSubscribeClick', currentTime);
+          });
+    </script>
     <div class="feedback-container">
-        <div id="comments-section">
-            <div id="comments-list"></div>
-        </div><h1>Leave a Comment</h1>
-        <form id="feedbackForm">
-            <textarea id="comment" placeholder="Write your comment here..." required></textarea>
-        </form>
-          <button id="sub">Submit</button>
+      <div id="comments-section">
+        <div id="comments-list"></div>
+      </div>
+      <h1>Leave a Comment</h1>
+      <form id="feedbackForm">
+        <textarea
+          id="comment"
+          placeholder="Write your comment here..."
+          required
+        ></textarea>
+      </form>
+      <button id="sub">Submit</button>
     </div>
     <p class="footer">
       Made by<a href="https://alimadcorp.github.io/site/social.html"
@@ -158,27 +172,65 @@ setTimeout(() => {
         >GCU website</a
       >.
     </p>
-    <div id="popup-overlay" style="overflow: auto; display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
-  <div style="background: #00003388; padding: 20px; border-radius: 10px; text-align: center; width: 300px; backdrop-filter:blur(4px); overflow: auto;">
-    <h2 id="popup-title">Title</h2>
-    <p id="popup-description">Description</p>
-    <input id="iname" type="text" placeholder="Name" style="width: 90%; "  pattern="[a-zA-Z]+" required/>
-    <input id="iclass" type="number" placeholder="Class" style="width: 90%; " />
-    <input id="isection" type="text" placeholder="Section" style="width: 90%; " />
-    <input id="iroll" type="text" placeholder="Roll Number" style="width: 90%; " required/>
-    <input id="imajor" type="text" placeholder="Major" style="width: 90%; " />
-    <input id="iphone" type="number" placeholder="Phone Number" style="width: 90%; " />
+    <div
+      id="popup-overlay"
+      style="overflow: auto; display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;"
+    >
+      <div
+        style="background: #00003388; padding: 20px; border-radius: 10px; text-align: center; width: 300px; backdrop-filter:blur(4px); overflow: auto;"
+      >
+        <h2 id="popup-title">Title</h2>
+        <p id="popup-description">Description</p>
+        <input
+          id="iname"
+          type="text"
+          placeholder="Name"
+          style="width: 90%; "
+          pattern="[a-zA-Z]+"
+          required
+        />
+        <input
+          id="iclass"
+          type="number"
+          placeholder="Class"
+          style="width: 90%; "
+        />
+        <input
+          id="isection"
+          type="text"
+          placeholder="Section"
+          style="width: 90%; "
+        />
+        <input
+          id="iroll"
+          type="text"
+          placeholder="Roll Number"
+          style="width: 90%; "
+          required
+        />
+        <input
+          id="imajor"
+          type="text"
+          placeholder="Major"
+          style="width: 90%; "
+        />
+        <input
+          id="iphone"
+          type="number"
+          placeholder="Phone Number"
+          style="width: 90%; "
+        />
         <div class="radio-groups" style="width:90%;">
           <label class="radio-container"
-            >Model<input type="radio" name="tv" value="model" checked/><span
+            >Model<input type="radio" name="tv" value="model" checked /><span
               class="radio-mark"
             ></span
           ></label>
           <label class="radio-container"
             >Poster<input type="radio" name="tv" value="poster" /><span
               class="radio-mark"
-            ></span
-          ></label><br>
+            ></span></label
+          ><br />
           <label class="radio-container"
             >Quiz<input type="radio" name="tv" value="quiz" /><span
               class="radio-mark"
@@ -188,211 +240,226 @@ setTimeout(() => {
             >Debate<input type="radio" name="tv" value="debate" /><span
               class="radio-mark"
             ></span
-            ></label></div>
-    <div>
-    <p id="cleanerr" style="color:red;"><strong></strong></p>
-      <button type="submit" id="popup-cancel" style="
-  background: linear-gradient(135deg, #cf4410, #f9a045);">Cancel</button>
-      <button id="popup-ok" style="margin-right: 10px;">Upload</button>
+          ></label>
+        </div>
+        <div>
+          <p id="cleanerr" style="color:red;"><strong></strong></p>
+          <button
+            type="submit"
+            id="popup-cancel"
+            style="
+  background: linear-gradient(135deg, #cf4410, #f9a045);"
+          >
+            Cancel
+          </button>
+          <button id="popup-ok" style="margin-right: 10px;">Upload</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
     <script src="fetch.js"></script>
     <script src="script.js"></script>
     <script src="popup.js"></script>
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  addDoc,
-  serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        collection,
+        query,
+        orderBy,
+        onSnapshot,
+        setDoc,
+        addDoc,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBR1UeKEAJV4x3YOjzMFDsaSUwQiLgJNFQ",
-  authDomain: "commentspagetests.firebaseapp.com",
-  projectId: "commentspagetests",
-  storageBucket: "commentspagetests.firebasestorage.app",
-  messagingSenderId: "560501874254",
-  appId: "1:560501874254:web:2cab2358cb517c3418ad1f",
-  measurementId: "G-HYDSZ89BLH",
-};
+      const firebaseConfig = {
+        apiKey: "AIzaSyBR1UeKEAJV4x3YOjzMFDsaSUwQiLgJNFQ",
+        authDomain: "commentspagetests.firebaseapp.com",
+        projectId: "commentspagetests",
+        storageBucket: "commentspagetests.firebasestorage.app",
+        messagingSenderId: "560501874254",
+        appId: "1:560501874254:web:2cab2358cb517c3418ad1f",
+        measurementId: "G-HYDSZ89BLH",
+      };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const appname = "awardlist";
-const feedbackForm = document.getElementById("feedbackForm");
-const commentTextarea = document.getElementById("comment");
-const commentsList = document.getElementById("comments-list");
-let commentsArray = [];
-async function addComment(commentText) {
-  try {
-    await addDoc(collection(db, "sendup"), {
-      text: commentText,
-      timestamp: serverTimestamp()
-    });
-    console.log("Comment added!");
-  } catch (error) {
-    console.error("Error adding comment: ", error);
-  }
-}
-function fetchVersion(){
-  const versionCheck = query(collection(db, "version"));
-  onSnapshot(versionCheck, (snapshot) => {
-    snapshot.forEach((doc) => {
-      let name = doc.data();
-      let version = doc.id;
-      if(version == appname){ setversion(name.version);}
-    });
-  });
-}
-function fetchComments() {
-  const commentsRef = query(collection(db, appname), orderBy("timestamp"));
-  onSnapshot(commentsRef, (snapshot) => {
-    commentsArray = []; 
-    snapshot.forEach((doc) => {
-      const commentData = doc.data();
-      commentData.id = doc.id;
-      commentsArray.push(commentData); 
-    });
-    displayCommentsWithDelay(true);
-  });
-} 
-function formatTimeAgo(timestamp) {
-  const now = new Date();
-  
-const diffInSeconds = Math.floor((now - timestamp) / 1000);
-if (diffInSeconds < 60) {
-  return diffInSeconds <= 0 ? "Just now" : `${diffInSeconds} second${diffInSeconds === 1 ? "" : "s"} ago`;
-}
-const diffInMinutes = Math.floor(diffInSeconds / 60);
-if (diffInMinutes < 60) {
-  return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
-}
-const diffInHours = Math.floor(diffInMinutes / 60);
-if (diffInHours < 24) {
-  return `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`;
-}
-const diffInDays = Math.floor(diffInHours / 24);
-if (diffInDays <= 14) {
-  return `${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
-} 
-  return timestamp.toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const appname = "awardlist";
+      const feedbackForm = document.getElementById("feedbackForm");
+      const commentTextarea = document.getElementById("comment");
+      const commentsList = document.getElementById("comments-list");
+      let commentsArray = [];
+      async function addComment(commentText) {
+        try {
+          await addDoc(collection(db, "sendup"), {
+            text: commentText,
+            timestamp: serverTimestamp()
+          });
+          console.log("Comment added!");
+        } catch (error) {
+          console.error("Error adding comment: ", error);
+        }
+      }
+      function fetchVersion(){
+        const versionCheck = query(collection(db, "version"));
+        onSnapshot(versionCheck, (snapshot) => {
+          snapshot.forEach((doc) => {
+            let name = doc.data();
+            let version = doc.id;
+            if(version == appname){ setversion(name.version);}
+          });
+        });
+      }
+      function fetchComments() {
+        const commentsRef = query(collection(db, appname), orderBy("timestamp"));
+        onSnapshot(commentsRef, (snapshot) => {
+          commentsArray = [];
+          snapshot.forEach((doc) => {
+            const commentData = doc.data();
+            commentData.id = doc.id;
+            commentsArray.push(commentData);
+          });
+          displayCommentsWithDelay(true);
+        });
+      }
+      function formatTimeAgo(timestamp) {
+        const now = new Date();
 
-function refreshCom(){
-  let newArray = [];
-  const commentsRef = query(collection(db, appname), orderBy("timestamp"));
-  onSnapshot(commentsRef, (snapshot) => {
-    snapshot.forEach((doc) => {
-      const commentData = doc.data();
-      commentData.id = doc.id;
-      newArray.push(commentData); 
-    });
-    if (JSON.stringify(newArray) !== JSON.stringify(commentsArray)) {
-  commentsArray = newArray;
-  displayCommentsWithDelay(false);
-    }
-  });
-} 
-function forceRefresh(){
-  let newArray = [];
-  const commentsRef = query(collection(db, appname), orderBy("timestamp"));
-  onSnapshot(commentsRef, (snapshot) => {
-    snapshot.forEach((doc) => {
-      const commentData = doc.data();
-      commentData.id = doc.id;
-      newArray.push(commentData); 
-    });
-      commentsArray = newArray;
-      displayCommentsWithDelay(false);
-  });
-} 
-function scrollToBottom() {
-  const commentsContainer = document.getElementById("comments-section");
-  commentsContainer.scrollTop = commentsContainer.scrollHeight;
-}
-let adding = false;
-async function displayCommentsWithDelay(scrolll) {
-  if(adding) return;
-  adding = true;
-  commentsList.innerHTML = "";
-  for (const comment of commentsArray) {
-    if(scrolll) { await new Promise((resolve) => setTimeout(resolve, 10));} // 50ms delay
-    const timestamp = comment.timestamp
-      ? comment.timestamp.toDate()
-      : new Date();
-    const timeAgo = formatTimeAgo(timestamp);
-    const commentElement = document.createElement("div");
-    commentElement.classList.add("comment");
-    commentElement.innerHTML = `
-      <p>${comment.text}</p>
-      <div class="comment-time">${timeAgo}</div>
-    `;
-    commentsList.appendChild(commentElement);
-  }
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  if(scrolll) scrollToBottom();
-  adding = false;
-}
+      const diffInSeconds = Math.floor((now - timestamp) / 1000);
+      if (diffInSeconds < 60) {
+        return diffInSeconds <= 0 ? "Just now" : `${diffInSeconds} second${diffInSeconds === 1 ? "" : "s"} ago`;
+      }
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      if (diffInMinutes < 60) {
+        return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
+      }
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours < 24) {
+        return `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`;
+      }
+      const diffInDays = Math.floor(diffInHours / 24);
+      if (diffInDays <= 14) {
+        return `${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
+      }
+        return timestamp.toLocaleDateString("en-US", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+      }
 
-document.getElementById("sub").addEventListener("click", () => {
-  const commentText = commentTextarea.value;
-  if (commentText) {
-    addComment(commentText);
-    commentTextarea.value = "";
-  }
-});
+      function refreshCom(){
+        let newArray = [];
+        const commentsRef = query(collection(db, appname), orderBy("timestamp"));
+        onSnapshot(commentsRef, (snapshot) => {
+          snapshot.forEach((doc) => {
+            const commentData = doc.data();
+            commentData.id = doc.id;
+            newArray.push(commentData);
+          });
+          if (JSON.stringify(newArray) !== JSON.stringify(commentsArray)) {
+        commentsArray = newArray;
+        displayCommentsWithDelay(false);
+          }
+        });
+      }
+      function forceRefresh(){
+        let newArray = [];
+        const commentsRef = query(collection(db, appname), orderBy("timestamp"));
+        onSnapshot(commentsRef, (snapshot) => {
+          snapshot.forEach((doc) => {
+            const commentData = doc.data();
+            commentData.id = doc.id;
+            newArray.push(commentData);
+          });
+            commentsArray = newArray;
+            displayCommentsWithDelay(false);
+        });
+      }
+      function scrollToBottom() {
+        const commentsContainer = document.getElementById("comments-section");
+        commentsContainer.scrollTop = commentsContainer.scrollHeight;
+      }
+      let adding = false;
+      async function displayCommentsWithDelay(scrolll) {
+        if(adding) return;
+        adding = true;
+        commentsList.innerHTML = "";
+        for (const comment of commentsArray) {
+          if(scrolll) { await new Promise((resolve) => setTimeout(resolve, 10));} // 50ms delay
+          const timestamp = comment.timestamp
+            ? comment.timestamp.toDate()
+            : new Date();
+          const timeAgo = formatTimeAgo(timestamp);
+          const commentElement = document.createElement("div");
+          commentElement.classList.add("comment");
+          commentElement.innerHTML = `
+            <p>${comment.text}</p>
+            <div class="comment-time">${timeAgo}</div>
+          `;
+          commentsList.appendChild(commentElement);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        if(scrolll) scrollToBottom();
+        adding = false;
+      }
 
-document.addEventListener('loadTable', (event) => {
-    fetchTable(event.detail.message);
-});
-function fetchTable(tableName) {
-    
-    let tableArray = []; 
-    console.log("Loading "+tableName);
-  const commentsRef = query(collection(db, tableName), orderBy("rank", "desc"));
-    onSnapshot(commentsRef, (snapshot) => {
-    snapshot.forEach((doc) => {
-      tableArray.push(doc.data()); 
-    });
-    const myNEvent = new CustomEvent('showTable', {
-    detail: { message: tableArray }
-});
-document.dispatchEvent(myNEvent);
-  });
-} 
-document.addEventListener('uploadData', (event) => {
-    uploadData(event.detail.message);
-});
-async function uploadData(data){
-  try {
-    console.log(data);
-    await addDoc(collection(db, data.cat), {
-      class: data.Class,
-      contact: data.phone,
-      department: data.major,
-      name: data.name,
-      roll: data.roll,
-      section: data.section,
-      rank: data.rank,
-      time: serverTimestamp()
-    });
-    console.log("Entry added!");
-    document.getElementById("popup-overlay").style.display = "none";
-  } catch (error) {
-    console.error("Error adding entry: ", error);
-  }
-}
-document.addEventListener("DOMContentLoaded", () => {fetchVersion(); setInterval(refreshCom, 8000); setInterval(forceRefresh, 61234);}); 
+      document.getElementById("sub").addEventListener("click", () => {
+        const commentText = commentTextarea.value;
+        if (commentText) {
+          addComment(commentText);
+          commentTextarea.value = "";
+        }
+      });
+
+      document.addEventListener('loadTable', (event) => {
+          fetchTable(event.detail.message);
+      });
+      function fetchTable(tableName) {
+
+          let tableArray = [];
+          console.log("Loading "+tableName);
+        const commentsRef = query(collection(db, tableName), orderBy("time", "desc"));
+          onSnapshot(commentsRef, (snapshot) => {
+          snapshot.forEach((doc) => {
+            tableArray.push(doc.data());
+          });
+          const myNEvent = new CustomEvent('showTable', {
+          detail: { message: tableArray }
+      });
+      document.dispatchEvent(myNEvent);
+        });
+      }
+      document.addEventListener('uploadData', (event) => {
+          uploadData(event.detail.message);
+      });
+      async function uploadData(data){
+        try {
+          console.log(data);
+
+          // Create a reference to the doc with a custom ID (data.roll)
+          const docRef = doc(db, data.cat, data.roll);
+
+          // Set the data for the document
+          await setDoc(docRef, {
+            class: data.Class,
+            contact: data.phone,
+            department: data.major,
+            name: data.name,
+            roll: data.roll,
+            section: data.section,
+            rank: data.rank,
+            time: serverTimestamp()
+          });
+
+          console.log("Entry added!");
+          document.getElementById("popup-overlay").style.display = "none";
+        } catch (error) {
+          console.error("Error adding entry: ", error);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", () => {fetchComments(); fetchVersion(); setInterval(refreshCom, 8000); setInterval(forceRefresh, 61234); });
     </script>
     <script src="generate.js"></script>
   </body>
